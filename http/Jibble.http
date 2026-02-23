@@ -1,0 +1,114 @@
+@baseUrl = http://localhost:3000/api/jibble
+@apiSecret = 5056a049365ca0fd1561acb1ead2887b9aae3743667bdd0b7f977ef7f92c2889
+
+### Health check (sin autenticación)
+GET http://localhost:3000/health
+
+###
+
+### 0. DEBUG: Verificar que la autenticación con Jibble funciona
+GET {{baseUrl}}/debug/token
+Authorization: Bearer {{apiSecret}}
+
+###
+
+### 0b. STATUS: Ver ventana de fichaje, empleados fichados, auto clock-out
+GET {{baseUrl}}/status
+Authorization: Bearer {{apiSecret}}
+
+###
+
+### 1. Crear un empleado nuevo
+POST {{baseUrl}}/employees
+Content-Type: application/json
+Authorization: Bearer {{apiSecret}}
+
+{
+  "fullName": "pepe  garcia",
+  "email": "juan.pere@empresa.com"
+}
+
+###
+
+### 2. Obtener lista de empleados → copia el campo `id` como personId
+GET {{baseUrl}}/employees
+Content-Type: application/json
+Authorization: Bearer {{apiSecret}}
+
+###
+
+### 3. Obtener lista de actividades → copia el campo `id` como activityId (ej: Work, Break)
+GET {{baseUrl}}/activities
+Content-Type: application/json
+Authorization: Bearer {{apiSecret}}
+
+###
+
+### Registrar entrada (clock-in) de un empleado
+POST {{baseUrl}}/clock-in
+Content-Type: application/json
+Authorization: Bearer {{apiSecret}}
+
+{
+  "personId": "0dcfc065-f333-44e0-a96e-5a55d831ab7b",
+  "activityId": ""
+}
+
+###
+
+### Registrar entrada (clock-in) sin actividad
+POST {{baseUrl}}/clock-in
+Content-Type: application/json
+Authorization: Bearer {{apiSecret}}
+
+{
+  "personId": "422c11d8-90f6-4e99-a0b0-9cc854c03147"
+}
+
+###
+
+### Registrar salida (clock-out) de un empleado
+POST {{baseUrl}}/clock-out
+Content-Type: application/json
+Authorization: Bearer {{apiSecret}}
+
+{
+  "personId": "422c11d8-90f6-4e99-a0b0-9cc854c03147"
+}
+
+###
+
+### ⚡ Forzar clock-IN a todos los empleados sin entrada hoy (igual que el cron de las 8:00)
+POST {{baseUrl}}/clock-in-all
+Authorization: Bearer {{apiSecret}}
+
+###
+
+### Iniciar descanso (break-in)
+POST {{baseUrl}}/break-in
+Content-Type: application/json
+Authorization: Bearer {{apiSecret}}
+
+{
+  "personId": "422c11d8-90f6-4e99-a0b0-9cc854c03147"
+}
+
+###
+
+### Finalizar descanso (break-out)
+POST {{baseUrl}}/break-out
+Content-Type: application/json
+Authorization: Bearer {{apiSecret}}
+
+{
+  "personId": "422c11d8-90f6-4e99-a0b0-9cc854c03147"
+}
+
+###
+
+### Obtener registros de asistencia (rango de fechas)
+GET {{baseUrl}}/attendance?startDate=2026-02-01&endDate=2026-02-20
+Content-Type: application/json
+Authorization: Bearer {{apiSecret}}
+
+###
